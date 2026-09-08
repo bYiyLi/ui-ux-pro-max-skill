@@ -10,7 +10,7 @@
   "scriptPath": "skills/ui-ux-pro-max/scripts/search.py",
   "frontmatter": {
     "name": "ui-ux-pro-max",
-    "description": "UI/UX design intelligence with searchable database"
+    "description": "UI/UX guidance for new interface design, reviewing existing UI, and scoped interaction or visual fixes. Uses a searchable design database when needed; preserves the current project stack and design system instead of imposing a new one on routine work."
   },
   "sections": {
     "quickReference": true

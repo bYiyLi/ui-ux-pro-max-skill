@@ -1,31 +1,27 @@
 # {{TITLE}}
 
 {{DESCRIPTION}}
+
+This Skill supplies design guidance inside the host task, which retains execution,
+authorization, and completion. A review remains read-only. Apply only the branch
+and platform guidance needed by the request; existing project decisions take
+precedence over generic stack, audience, library, and layout defaults below.
+Return to the host task for already-authorized remaining work; using this Skill
+does not authorize installation, file persistence, publication, or scope expansion.
 {{QUICK_REFERENCE}}
 # Prerequisites
 
-Check if Python is installed:
+Check Python only when the selected task needs a search script and availability is unknown:
 
 ```bash
 python3 --version || python --version
 ```
 
-If Python is not installed, install it based on user's OS:
-
-**macOS:**
-```bash
-brew install python3
-```
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update && sudo apt install python3
-```
-
-**Windows:**
-```powershell
-winget install Python.Python.3.12
-```
+If Python or the script is unavailable, use the existing reference guidance for
+independent review or fixes it can support. Report any conclusion that genuinely
+depends on the unavailable script as unverified. Do not install a runtime merely
+to satisfy this workflow; installation requires the host task's explicit
+authorization. A tool or permission denial must not be bypassed.
 
 > **Note:** On Windows, use `python` instead of `python3` to run scripts (e.g., `python scripts/search.py` instead of `python3 scripts/search.py`).
 
@@ -47,19 +43,23 @@ Use this skill when the user requests any of the following:
 | **Add charts / data viz** | "Add an analytics dashboard chart" | Step 3 (domain: chart) |
 | **Stack best practices** | "React performance tips"、"SwiftUI navigation" | Step 4 (stack search) |
 
-Follow this workflow:
+Follow the selected branch, not every step. Existing-page reviews and local fixes
+start from the relevant checks, without creating a design system. A new page in
+an existing product also reuses its established design system unless the user
+explicitly requests a redesign.
 
 ### Step 1: Analyze User Requirements
 
-Extract key information from user request:
-- **Product type**: Entertainment (social, video, music, gaming), Tool (scanner, editor, converter), Productivity (task manager, notes, calendar), or hybrid
-- **Target audience**: C-end consumer users; consider age group, usage context (commute, leisure, work)
-- **Style keywords**: playful, vibrant, minimal, dark mode, content-first, immersive, etc.
-- **Stack**: React Native (this project's only tech stack)
+Extract the product type, audience, style constraints, and stack from the request,
+current repository, and confirmed project decisions. Do not assume a consumer
+audience or React Native. Resolve available facts before asking; ask only for a
+remaining detail that materially changes the requested result or authorization.
 
-### Step 2: Generate Design System (REQUIRED)
+### Step 2: Generate a New Design System (when requested or needed)
 
-**Always start with `--design-system`** to get comprehensive recommendations with reasoning:
+Use `--design-system` when the task requires a new design system or explicitly
+requests fresh art-direction choices. Skip it for review, local fixes, or work
+already governed by an existing design system:
 
 ```bash
 python3 skills/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system [-p "Project Name"]
@@ -78,7 +78,10 @@ python3 skills/ui-ux-pro-max/scripts/search.py "beauty spa wellness service" --d
 
 ### Step 2b: Persist Design System (Master + Overrides Pattern)
 
-To save the design system for **hierarchical retrieval across sessions**, add `--persist`:
+Only when the host task authorizes saving a design system, and the target path
+and existing file state have been checked, add `--persist`. Do not create or
+overwrite design sources during read-only review, or introduce a competing
+source of truth when the project already defines one:
 
 ```bash
 python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name"
@@ -96,7 +99,7 @@ python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persi
 This also creates:
 - `design-system/pages/dashboard.md` — Page-specific deviations from Master
 
-**How hierarchical retrieval works:**
+**For projects that have adopted this layout, hierarchical retrieval works as follows:**
 1. When building a specific page (e.g., "Checkout"), first check `design-system/pages/checkout.md`
 2. If the page file exists, its rules **override** the Master file
 3. If not, use `design-system/MASTER.md` exclusively
@@ -135,7 +138,8 @@ python3 skills/ui-ux-pro-max/scripts/search.py "internal analytics dashboard" --
 
 ### Step 3: Supplement with Detailed Searches (as needed)
 
-After getting the design system, use domain searches to get additional details:
+Use a domain search when a concrete design question needs more detail. It can
+be used independently and does not require a full design-system search first:
 
 ```bash
 python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --domain <domain> [-n <max_results>]
@@ -186,6 +190,10 @@ python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --stack <stack>
 
 ### Available Stacks
 
+The entries below are examples. Check the installed script's help when needed
+to determine support for the current project stack; absence from this table is
+not a reason to change that stack.
+
 | Stack | Focus |
 |-------|-------|
 | `react-native` | Components, Navigation, Lists |
@@ -204,13 +212,17 @@ python3 skills/ui-ux-pro-max/scripts/search.py "enterprise tableview density per
 
 **User request:** "Make an AI search homepage。"
 
+This example assumes a new React Native product with no existing design system.
+It does not establish defaults for other projects or authorize implementation
+when the actual user requested only review or planning.
+
 ### Step 1: Analyze Requirements
 - Product type: Tool (AI search engine)
 - Target audience: C-end users looking for fast, intelligent search
 - Style keywords: modern, minimal, content-first, dark mode
 - Stack: React Native
 
-### Step 2: Generate Design System (REQUIRED)
+### Step 2: Generate the Example's New Design System
 
 ```bash
 python3 skills/ui-ux-pro-max/scripts/search.py "AI search tool modern minimal" --design-system -p "AI Search"
@@ -258,7 +270,7 @@ python3 skills/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system 
 
 - Use **multi-dimensional keywords** — combine product + industry + tone + density: `"entertainment social vibrant content-dense"` not just `"app"`
 - Try different keywords for the same need: `"playful neon"` → `"vibrant dark"` → `"content-first minimal"`
-- Use `--design-system` first for full recommendations, then `--domain` to deep-dive any dimension you're unsure about
+- Use `--design-system` for a new design system; use `--domain` directly for a specific unresolved question in existing work
 - Add `--stack <stack>` for implementation-specific guidance when the target stack is known
 
 ### Common Sticking Points
@@ -275,12 +287,14 @@ python3 skills/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system 
 
 ### Pre-Delivery Checklist
 
-- Run `--domain ux "animation accessibility z-index loading"` as a UX validation pass before implementation
-- Run through Quick Reference **§1–§3** (CRITICAL + HIGH) as a final review
-- Test on 375px (small phone) and landscape orientation
-- Verify behavior with **reduced-motion** enabled and **Dynamic Type** at largest size
-- Check dark mode contrast independently (don't assume light mode values work)
-- Confirm all touch targets ≥44pt and no content hidden behind safe areas
+Use the relevant Quick Reference sections and the platform-specific checklist
+below for the changed UI and its necessary dependencies. Complete all explicitly
+required project checks, but do not add a full-device or design-system review to
+an unrelated local fix. Database searches supply guidance, not evidence that UI
+behavior was tested. Report unavailable visual, device, or runtime checks as
+unverified; continue independent checks and do not claim full validation.
+Repeat or expand checks only after new changes, failures, or a concrete unresolved
+concern. Deliver the requested result rather than waiting for optional checks.
 
 ---
 
@@ -351,7 +365,9 @@ Scope notice: The rules below are for App UI (iOS/Android/React Native/Flutter),
 
 ## Pre-Delivery Checklist
 
-Before delivering UI code, verify these items:
+Before delivering UI code, select the items affected by the request and its
+necessary dependencies. For a new App UI, cover the applicable sections; for a
+local fix, use the affected checks plus any explicitly required project tests.
 Scope notice: This checklist is for App UI (iOS/Android/React Native/Flutter).
 
 ### Visual Quality
